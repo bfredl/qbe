@@ -220,11 +220,11 @@ struct Blk {
 		short type;
 		Ref arg;
 	} jmp;
-	Blk *s1;
-	Blk *s2;
-	Blk *link;
+	Blk *s1; // jump if condition
+	Blk *s2; // jump otherwise. id to s2 when unconditional
+	Blk *link; // linked list of all blocks
 
-	uint id;
+	uint id; // id calculated by fillrpo()
 	uint visit;
 
 	Blk *idom;

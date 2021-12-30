@@ -98,6 +98,7 @@ rporec(Blk *b, uint x)
 }
 
 /* fill the rpo information */
+// also delete nodes that are not reachable from entry
 void
 fillrpo(Fn *f)
 {
