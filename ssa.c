@@ -45,6 +45,9 @@ filluse(Fn *fn)
 	Tmp *tmp;
 
 	/* todo, is this the correct file? */
+	// because it doesn't assume we are SSA yet?
+	// but when we are SSA, it does some weird shit with
+	// tmp[t].phi ..
 	tmp = fn->tmp;
 	for (t=Tmp0; t<fn->ntmp; t++) {
 		tmp[t].bid = -1u;
@@ -52,7 +55,7 @@ filluse(Fn *fn)
 		tmp[t].nuse = 0;
 		tmp[t].cls = 0;
 		tmp[t].phi = 0;
-		tmp[t].width = WFull;
+		tmp[t].width = WFull; // width = literal bit width of a variable
 		if (tmp[t].use == 0)
 			tmp[t].use = vnew(0, sizeof(Use), Pfn);
 	}
@@ -82,8 +85,8 @@ filluse(Fn *fn)
 				if (isext(i->op))
 					w = Wsb + (i->op - Oextsb);
 				if (w == Wsw || w == Wuw)
-				if (i->cls == Kw)
-					w = WFull;
+					if (i->cls == Kw)
+						w = WFull;
 				t = i->to.val;
 				tmp[t].width = w;
 				tmp[t].bid = b->id;

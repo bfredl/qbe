@@ -131,12 +131,13 @@ fillrpo(Fn *f)
 static Blk *
 inter(Blk *b1, Blk *b2)
 {
-	Blk *bt;
 
 	if (b1 == 0)
 		return b2;
 	while (b1 != b2) {
 		if (b1->id < b2->id) {
+			// SWAP b1, b2
+			Blk *bt;
 			bt = b1;
 			b1 = b2;
 			b2 = bt;

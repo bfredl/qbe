@@ -220,19 +220,22 @@ struct Blk {
 		short type;
 		Ref arg;
 	} jmp;
+  // successors (max two!)
 	Blk *s1; // jump if condition
 	Blk *s2; // jump otherwise. id to s2 when unconditional
-	Blk *link; // linked list of all blocks
+
+	Blk *link; // linked list of all blocks, no semantics otherwise?
 
 	uint id; // id calculated by fillrpo()
-	uint visit;
+	uint visit; // tempororary for n visits in various algos
 
-	Blk *idom;
-	Blk *dom, *dlink;
+	Blk *idom; // likely "immediate dominator"
+	Blk *dom, *dlink; // likely forms a linked list of all dominators. verify
+                    // that this is actually possible :HUVUDBRY:
 	Blk **fron;
 	uint nfron;
 
-	Blk **pred;
+	Blk **pred; // pred[npred] = pointers to predecessors
 	uint npred;
 	BSet in[1], out[1], gen[1];
 	int nlive[2];
@@ -279,7 +282,7 @@ struct Alias {
 struct Tmp {
 	char name[NString];
 	Use *use;
-	uint ndef, nuse;
+	uint ndef, nuse; // number of definitions and usages
 	uint bid; /* id of a defining block */
 	uint cost;
 	int slot; /* -1 for unset */

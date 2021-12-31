@@ -64,9 +64,9 @@ func(Fn *fn)
 	fillrpo(fn);
 	fillpreds(fn);
 	filluse(fn);
-	memopt(fn);
+	memopt(fn); // "promote uniform stack slots to temporaries"
 	filluse(fn);
-	ssa(fn);
+	ssa(fn); // starts with filldom(fn)
 	filluse(fn);
 	ssacheck(fn);
 	fillalias(fn);
