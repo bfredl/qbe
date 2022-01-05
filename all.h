@@ -232,8 +232,8 @@ struct Blk {
 	Blk *idom; // likely "immediate dominator"
 	Blk *dom, *dlink; // likely forms a linked list of all dominators. verify
                     // that this is actually possible :HUVUDBRY:
-	Blk **fron;
-	uint nfron;
+	Blk **fron; // ptr and
+	uint nfron; // size of the dominance frontier
 
 	Blk **pred; // pred[npred] = pointers to predecessors
 	uint npred;
