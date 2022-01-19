@@ -204,7 +204,7 @@ selcmp(Ref arg[2], int k, int swap, Fn *fn)
 static void
 sel(Ins i, ANum *an, Fn *fn)
 {
-	Ref r0, r1;
+	Ref r0, r1, mask, l0, l1;
 	int x, k, kc, swap;
 	int64_t sz;
 	Ins *i0, *i1;
@@ -268,6 +268,32 @@ sel(Ins i, ANum *an, Fn *fn)
 		i1 = curi;
 		emit(Ocopy, Kw, TMP(RCX), r0, R);
 		fixarg(&i1->arg[0], argcls(&i, 0), i1, fn);
+		break;
+	case Ouwtof:
+		r0 = newtmp("utof", Kl, fn);
+		emit(Osltof, k, i.to, r0, R);
+		emit(Oextuw, Kl, r0, i.arg[0], R);
+		fixarg(&curi->arg[0], k, curi, fn);
+		break;
+	case Oultof:
+		l0 = newtmp("utof", Kl, fn);
+		l1 = newtmp("utof", Kl, fn);
+		mask = newtmp("utof", Kl, fn);
+		r0 = newtmp("utof", k, fn);
+		r1 = newtmp("utof", k, fn);
+		emit(Oadd, k, i.to, r1, r0);
+		emit(Ocast, k, r0, l1, R);
+		if (k == Kd) {
+			emit(Oand, Kl, l1, mask, getcon(0x43e0000000000000, fn));
+			fixarg(&curi->arg[1], Kl, curi, fn);
+		} else
+			emit(Oand, Kl, l1, mask, getcon(0x5f000000, fn));
+		emit(Osar, Kl, mask, i.arg[0], getcon(63, fn));
+		emit(Osltof, k, r1, l0, R);
+		emit(Oand, Kl, l0, i.arg[0], getcon((1llu << 63) - 1, fn));
+		i1 = curi;
+		fixarg(&i1->arg[0], Kl, i1, fn);
+		fixarg(&i1->arg[1], Kl, i1, fn);
 		break;
 	case Onop:
 		break;

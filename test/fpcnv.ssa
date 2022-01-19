@@ -17,13 +17,33 @@ function d $ftrunc(d %f) {
 	ret %rt
 }
 
+export
+function d $uwtof(w %w) {
+@ftrunc
+	%rt =d uwtof %w
+	ret %rt
+}
+
+export
+function d $ultof(l %l) {
+@ftrunc
+	%rt =d ultof %l
+	ret %rt
+}
+
 # >>> driver
 # extern float fneg(float);
 # extern double ftrunc(double);
+# extern double uwtof(unsigned int);
+# extern double ultof(unsigned long long);
 # int main() {
 # 	if (fneg(1.23f) != -1.23f)  return 1;
 # 	if (ftrunc(3.1415) != 3.0)  return 2;
 # 	if (ftrunc(-1.234) != -1.0) return 3;
+# 	if (uwtof(1) != (double)1) return 4;
+# 	if (uwtof((1u << 31) + 20) != (double)((1u << 31) + 20ull)) return 5;
+# 	if (ultof(1llu) != (double)1) return 6;
+# 	if (ultof((1llu << 63) + 20) != (double)((1llu << 63) + 20ull)) return 7;
 # 	return 0;
 # }
 # <<<
